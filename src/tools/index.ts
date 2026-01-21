@@ -6,6 +6,7 @@ import handleDirsTool from "./handleDirs";
 import handleFetchTool from "./handleFetch";
 import getCurrencyTool from "./getCurrency";
 import handleDatabasesTool from "./handleDatabases";
+import convertFilesTool from "./convertFiles";
 
 export const registerTools = (server: McpServer) => {
   getSystemInfoTool(server);
@@ -15,4 +16,5 @@ export const registerTools = (server: McpServer) => {
   handleFetchTool(server);
   getCurrencyTool(server);
   handleDatabasesTool(server);
+  convertFilesTool(server);
 };
