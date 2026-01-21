@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerTools } from "./tools";
+import { registerResources } from "./resources";
 
 export const server = new McpServer({
   name: "Mcp server",
@@ -7,3 +8,4 @@ export const server = new McpServer({
 });
 
 registerTools(server);
+registerResources(server);
