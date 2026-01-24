@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
 import { getWeatherData } from "../utils/weather";
 import { getCoordinates } from "../utils/coordinates";
+import { returnData } from "../utils/returnData";
 
 export default async (server: McpServer) => {
   server.tool(
@@ -14,26 +15,10 @@ export default async (server: McpServer) => {
     async ({ latitude, longitude }) => {
       const data = await getWeatherData(latitude, longitude);
       if (data.isError) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(data),
-            },
-          ],
-        };
+        return returnData(JSON.stringify(data), true);
       }
-
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(data.content),
-          },
-        ],
-      };
-    }
+      return returnData(JSON.stringify(data.content));
+    },
   );
 
   server.tool(
@@ -46,38 +31,18 @@ export default async (server: McpServer) => {
       const data = await getCoordinates(city);
 
       if (data.isError) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(data),
-            },
-          ],
-        };
+        return returnData(JSON.stringify(data), true);
       }
+
       if (data.content) {
         const { latitude, longitude } = data.content;
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify((await getWeatherData(latitude, longitude)).content),
-            },
-          ],
-        };
+        return returnData(
+          JSON.stringify((await getWeatherData(latitude, longitude)).content),
+        );
       }
 
-      return {
-        isError: true,
-        content: [
-          {
-            type: "text",
-            text: "error obtaining data from the API",
-          },
-        ],
-      };
-    }
+      return returnData("error obtaining data from the API", true);
+    },
   );
 };

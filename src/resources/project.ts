@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import fs from "node:fs";
+import { returnResource } from "../utils/returnData";
 
 export default async (server: McpServer) => {
   server.resource(
@@ -11,23 +12,12 @@ export default async (server: McpServer) => {
         const data = fs.readFileSync("./package.json", "utf8");
         const { dependencies, devDependencies } = JSON.parse(data);
 
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: JSON.stringify({ dependencies, devDependencies }),
-            },
-          ],
-        };
+        return returnResource(
+          JSON.stringify({ dependencies, devDependencies }),
+          uri,
+        );
       } catch (err) {
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnResource(`${err}`, uri, true);
       }
     },
   );
@@ -41,23 +31,9 @@ export default async (server: McpServer) => {
         const data = fs.readFileSync("./package.json", "utf8");
         const { scripts } = JSON.parse(data);
 
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: JSON.stringify({ scripts }),
-            },
-          ],
-        };
+        return returnResource(JSON.stringify({ scripts }), uri);
       } catch (err) {
-        return {
-          contents: [
-            {
-              uri: uri.href,
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnResource(`${err}`, uri, true);
       }
     },
   );

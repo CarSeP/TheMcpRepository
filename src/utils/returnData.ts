@@ -9,3 +9,15 @@ export const returnData = (text = "", isError = false) => {
     ],
   };
 };
+
+export const returnResource = (text = "", uri: URL, isError = false) => {
+  return {
+    isError,
+    contents: [
+      {
+        uri: uri.href,
+        text,
+      },
+    ],
+  };
+};

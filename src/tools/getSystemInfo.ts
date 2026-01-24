@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import os from "os";
+import { returnData } from "../utils/returnData";
 
 export default async (server: McpServer) => {
   server.tool(
@@ -23,14 +24,7 @@ export default async (server: McpServer) => {
         homedir,
       };
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(info),
-          },
-        ],
-      };
-    }
+      return returnData(JSON.stringify(info));
+    },
   );
 };

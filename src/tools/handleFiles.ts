@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
 import fs from "node:fs";
+import { returnData } from "../utils/returnData";
 
 export default async (server: McpServer) => {
   server.tool(
@@ -13,26 +14,11 @@ export default async (server: McpServer) => {
     async ({ filePath, fileContent }) => {
       try {
         fs.writeFileSync(filePath, fileContent);
-        return {
-          content: [
-            {
-              type: "text",
-              text: "file created",
-            },
-          ],
-        };
+        return returnData("file created");
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
@@ -44,58 +30,30 @@ export default async (server: McpServer) => {
     async ({ filePath }) => {
       try {
         const data = fs.readFileSync(filePath, "utf8");
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                file: filePath,
-                content: data,
-              }),
-            },
-          ],
-        };
+        return returnData(
+          JSON.stringify({
+            file: filePath,
+            content: data,
+          }),
+        );
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
     "delete-file",
     "tool for delete file",
-    { path: z.string().describe("") },
+    { path: z.string().describe("file path") },
     async ({ path }) => {
       try {
         fs.unlinkSync(path);
-        return {
-          content: [
-            {
-              type: "text",
-              text: "delete file",
-            },
-          ],
-        };
+        return returnData("delete file");
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
@@ -107,26 +65,11 @@ export default async (server: McpServer) => {
     async ({ filePath }) => {
       try {
         const exists = fs.existsSync(filePath);
-        return {
-          content: [
-            {
-              type: "text",
-              text: `file exists: ${exists}`,
-            },
-          ],
-        };
+        return returnData(`file exists: ${exists}`);
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
@@ -139,25 +82,10 @@ export default async (server: McpServer) => {
     async ({ oldPath, newPath }) => {
       try {
         fs.renameSync(oldPath, newPath);
-        return {
-          content: [
-            {
-              type: "text",
-              text: "file renamed",
-            },
-          ],
-        };
+        return returnData("file renamed");
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 };

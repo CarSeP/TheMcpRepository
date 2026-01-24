@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import z from "zod";
 import fs from "node:fs";
+import { returnData } from "../utils/returnData";
 
 export default async (server: McpServer) => {
   server.tool(
@@ -12,26 +13,11 @@ export default async (server: McpServer) => {
     async ({ dirPath }) => {
       try {
         fs.mkdirSync(dirPath, { recursive: true });
-        return {
-          content: [
-            {
-              type: "text",
-              text: "directory created",
-            },
-          ],
-        };
+        return returnData("directory created");
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
@@ -43,26 +29,11 @@ export default async (server: McpServer) => {
     async ({ dirPath }) => {
       try {
         fs.rmSync(dirPath, { recursive: true, force: true });
-        return {
-          content: [
-            {
-              type: "text",
-              text: "directory deleted",
-            },
-          ],
-        };
+        return returnData("directory deleted");
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
@@ -75,26 +46,11 @@ export default async (server: McpServer) => {
     async ({ oldPath, newPath }) => {
       try {
         fs.renameSync(oldPath, newPath);
-        return {
-          content: [
-            {
-              type: "text",
-              text: "directory renamed",
-            },
-          ],
-        };
+        return returnData("directory renamed");
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 
   server.tool(
@@ -105,26 +61,12 @@ export default async (server: McpServer) => {
     },
     async ({ dirPath }) => {
       try {
-        const exists = fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory();
-        return {
-          content: [
-            {
-              type: "text",
-              text: `directory exists: ${exists}`,
-            },
-          ],
-        };
+        const exists =
+          fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory();
+        return returnData(`directory exists: ${exists}`);
       } catch (err) {
-        return {
-          isError: true,
-          content: [
-            {
-              type: "text",
-              text: `${err}`,
-            },
-          ],
-        };
+        return returnData(`${err}`, true);
       }
-    }
+    },
   );
 };
